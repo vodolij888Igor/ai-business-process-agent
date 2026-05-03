@@ -1,5 +1,7 @@
 # AI Business Process Agent (Portfolio API)
 
+Structured FastAPI service that turns messy business inputs into actionable AI-generated workflow plans.
+
 [![Tests](https://github.com/vodolij888Igor/ai-business-process-agent/actions/workflows/tests.yml/badge.svg)](https://github.com/vodolij888Igor/ai-business-process-agent/actions/workflows/tests.yml)
 
 ## Project overview
