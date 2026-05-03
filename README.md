@@ -194,12 +194,48 @@ A **200** response returns the structured plan. Shape is stable; wording may var
 3. Under **Body**, select **raw**, choose **JSON**, and paste the same payload structure as in the cURL example (`business_task`, `business_context`, `data_items`, `preferred_tone`).
 4. **Send** the request. On success, verify **`task_summary`**, **`detected_process_type`**, **`priority`**, **`recommended_workflow`**, **`suggested_tools`**, **`draft_response`**, **`next_steps`**, and **`reasoning`** in the response panel.
 
-## Current limitations
+## Architecture
 
-- **OpenAI dependency:** Analysis requires a valid `OPENAI_API_KEY` and network access to OpenAI; quotas and outages surface as **502** responses.
-- **No persistence:** Nothing is stored; each request is stateless.
-- **No auth:** Endpoints are open—add API keys or OAuth before any public deployment.
-- **No real integrations:** `suggested_tools` are labels only; nothing calls external systems automatically.
+The API is organized as a thin **FastAPI** surface over a **service layer** that performs OpenAI-backed analysis and returns a fixed JSON contract.
+
+- The FastAPI app exposes **`POST /run-business-agent`** for agent-style planning.
+- **Pydantic** schemas validate incoming requests and outgoing responses at the HTTP boundary.
+- The **service layer** orchestrates OpenAI for business process analysis and structured, agent-style planning (workflow steps, tool suggestions as labels, draft text, and rationale).
+- **Environment variables** (including `OPENAI_API_KEY`) are loaded from a local **`.env`** file via `python-dotenv` when the service module loads.
+- **Swagger UI** at `/docs` provides interactive request/response testing against the live OpenAPI schema.
+- **Automated tests** mock the OpenAI client so the AI layer is never called during CI; they assert HTTP behavior and response shape safely.
+- The current release accepts **business tasks**, **business context**, and optional **data items** as JSON only—there is no separate ingestion pipeline.
+
+**Request flow (high level):**
+
+```text
+Client / Swagger / Postman
+        ↓
+FastAPI route: POST /run-business-agent
+        ↓
+Pydantic validation
+        ↓
+Business process agent service layer
+        ↓
+OpenAI API
+        ↓
+JSON response: task_summary, detected_process_type, priority, recommended_workflow, suggested_tools, draft_response, next_steps, reasoning
+```
+
+## Limitations
+
+This repository is a **backend portfolio project**, not a complete autonomous agent platform.
+
+- There is **no database**; runs are not persisted.
+- There is **no task or workflow history** (each request is stateless).
+- There is **no user authentication** or authorization—endpoints should not be exposed publicly without additional controls.
+- There is **no frontend dashboard**; interaction is via HTTP clients, Swagger UI, or Postman.
+- **Suggested tools** are **nominal labels** only—the service does **not** execute real external tools or automations.
+- There are **no live integrations** with email, CRM, Google Sheets, Slack, helpdesk products, or similar systems.
+
+The project is intended as a **clean, local API demonstration**. Operationally, analysis still depends on a valid **`OPENAI_API_KEY`** and connectivity to OpenAI; missing configuration yields **503**, and upstream failures typically yield **502**.
+
+**Future versions** could add database storage, authenticated access, external tool execution, workflow history, deployment hardening, scheduled agent runs, observability, and a frontend dashboard aligned with the same API contract.
 
 ## Future improvements
 
