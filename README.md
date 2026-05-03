@@ -111,6 +111,12 @@ Content-Type: application/json
 
 `GET /health` returns `{"status":"ok"}`.
 
+## Screenshot
+
+The screenshot below shows a successful POST /run-business-agent request in FastAPI Swagger UI with a 200 response.
+
+![Swagger UI successful business process agent response](docs/images/swagger-business-agent-code-200.png)
+
 ## Current limitations
 
 - **No LLM:** Classification, summaries, and rationale use simple keyword heuristics, not OpenAI or other providers.
