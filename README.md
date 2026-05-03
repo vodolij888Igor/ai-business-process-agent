@@ -237,6 +237,33 @@ The project is intended as a **clean, local API demonstration**. Operationally, 
 
 **Future versions** could add database storage, authenticated access, external tool execution, workflow history, deployment hardening, scheduled agent runs, observability, and a frontend dashboard aligned with the same API contract.
 
+## Business value
+
+This project shows how **business tasks**, **customer requests**, **operational notes**, and **workflow problems** expressed as text can be analyzed with AI to produce a **structured action plan**: recommended workflow steps, suggested tool categories (as labels), draft responses aligned to tone, concrete next steps, and explicit reasoning. The same pattern can be adapted for **small businesses**, **SaaS teams**, **agencies**, **service businesses**, **consultants**, **internal operations teams**, and any organization that needs to turn **unstructured work requests** into **organized, reviewable actions**.
+
+## Example use cases
+
+- Analyzing mixed customer, sales, support, and operations requests
+- Turning unstructured business notes into structured workflows
+- Recommending next actions for teams
+- Suggesting the right automation tool or workflow type
+- Drafting business responses from task context
+- Prioritizing urgent business process issues
+- Supporting internal operations planning
+- Creating agent-style workflow recommendations before human review
+
+## Future agent integration plan
+
+The **current** API accepts **business tasks**, **business context**, and optional **data items** through **JSON** only; it **does not** connect to or execute external systems.
+
+**Possible next steps** for a productized agent:
+
+- Connect to real tools and data sources (e.g. email, CRM, Google Sheets, Slack, helpdesk systems, document analyzers) behind explicit configuration and consent.
+- Move from **recommending** tools to **executing** approved integrations when safe—today the API returns **labels only**, not live actions.
+- Persist **workflow history** and prior agent runs in a **database** for auditability and follow-up.
+- Extend responses with fields such as **`selected_tool`**, **`tool_arguments`**, **`execution_status`**, **`assigned_owner`**, **`due_date`**, and **`processed_at`** once execution and ownership models exist.
+- Support **multi-step** agent workflows, **scheduled** runs, **human approval** gates, **authentication**, hardened **deployment**, and a **frontend** dashboard—none of which ship in this repository yet.
+
 ## Future improvements
 
 - Optional retrieval over company documents before calling the model.
