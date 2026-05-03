@@ -244,6 +244,26 @@ The project is intended as a **clean, local API demonstration**. Operationally, 
 - Introduce authentication, rate limiting, and observability (tracing, metrics).
 - Connect to real tools via secure adapters (CRM, email, ticketing) behind explicit user consent.
 
+## Quality checklist
+
+Portfolio readiness for this release:
+
+- [x] FastAPI backend implemented
+- [x] `POST /run-business-agent` endpoint working
+- [x] Real OpenAI API integration added
+- [x] Business tasks, context, and data items supported through JSON input
+- [x] Swagger UI tested successfully
+- [x] Screenshot added to README
+- [x] API usage examples included
+- [x] Automated tests added with pytest
+- [x] OpenAI calls mocked in tests
+- [x] GitHub Actions CI added
+- [x] Environment variables handled with `.env`
+- [x] `.env` excluded from GitHub
+- [x] Architecture documented
+- [x] Limitations documented
+- [x] Project pushed to GitHub
+
 ## License
 
 Use and modify for portfolio and learning purposes unless otherwise specified.
