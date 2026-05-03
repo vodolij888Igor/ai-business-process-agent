@@ -1,22 +1,25 @@
 """
 FastAPI entrypoint for the AI Business Process Agent API.
 
-Exposes a single primary endpoint that validates input, runs placeholder agent logic,
-and returns a structured process plan for portfolio and integration demos.
+Validates requests, runs OpenAI-backed agent logic, and maps service failures to HTTP errors.
 """
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
 from app.schemas.agent_schema import RunBusinessAgentRequest, RunBusinessAgentResponse
-from app.services.agent_service import run_business_agent
+from app.services.agent_service import (
+    AgentConfigurationError,
+    AgentProviderError,
+    run_business_agent,
+)
 
 app = FastAPI(
     title="AI Business Process Agent",
     description=(
         "Accepts a business task, context, and optional data snippets; "
-        "returns a structured, AI-ready business process plan (v1 uses local placeholder logic)."
+        "returns a structured, AI-ready business process plan powered by OpenAI."
     ),
-    version="0.1.0",
+    version="0.2.0",
 )
 
 
@@ -31,6 +34,8 @@ def health() -> dict[str, str]:
     response_model=RunBusinessAgentResponse,
     responses={
         422: {"description": "Validation error — request body did not match the schema."},
+        502: {"description": "Bad gateway — OpenAI request failed or returned unusable output."},
+        503: {"description": "Service unavailable — OpenAI is not configured (missing API key)."},
     },
 )
 def run_business_agent_endpoint(
@@ -40,6 +45,11 @@ def run_business_agent_endpoint(
     Run the business process agent and return a structured plan.
 
     Request fields are validated by Pydantic before this handler runs. The response
-    shape is stable so clients can depend on it when swapping in a real LLM later.
+    shape is stable for downstream automation and integrations.
     """
-    return run_business_agent(body)
+    try:
+        return run_business_agent(body)
+    except AgentConfigurationError as exc:
+        raise HTTPException(status_code=503, detail=exc.message) from exc
+    except AgentProviderError as exc:
+        raise HTTPException(status_code=502, detail=exc.message) from exc

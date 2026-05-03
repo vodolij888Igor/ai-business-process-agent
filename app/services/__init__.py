@@ -1,4 +1,4 @@
-"""Business logic for the agent (placeholder rules in v1; replaceable with LLM later)."""
+"""Business logic for the agent (OpenAI-backed structured process planning)."""
 
 from app.services.agent_service import run_business_agent
 

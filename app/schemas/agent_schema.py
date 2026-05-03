@@ -42,7 +42,11 @@ class RunBusinessAgentResponse(BaseModel):
     task_summary: str = Field(..., description="Short restatement of the business task.")
     detected_process_type: str = Field(
         ...,
-        description="High-level category inferred from the task (placeholder heuristic in v1).",
+        description=(
+            "High-level category inferred from the task (e.g. customer_operations, "
+            "sales_process, support_workflow, document_processing, crm_follow_up, "
+            "internal_operations, general_business_process)."
+        ),
     )
     priority: Literal["low", "medium", "high"] = Field(
         ...,
@@ -54,7 +58,10 @@ class RunBusinessAgentResponse(BaseModel):
     )
     suggested_tools: list[str] = Field(
         ...,
-        description="Tool or integration ideas aligned with the workflow (labels only in v1).",
+        description=(
+            "Tool or integration ideas aligned with the workflow (labels only; "
+            "e.g. email_automation, crm_follow_up, business_process_agent)."
+        ),
     )
     draft_response: str = Field(
         ...,
@@ -66,5 +73,5 @@ class RunBusinessAgentResponse(BaseModel):
     )
     reasoning: str = Field(
         ...,
-        description="Brief justification for the plan (placeholder logic in v1).",
+        description="Brief justification for the plan (priority, process type, and key inputs).",
     )
