@@ -51,6 +51,15 @@ Operations and customer-facing teams often receive mixed signals: emails, form s
 
 6. **Open interactive docs:** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 
+## Running tests
+
+Automated tests mock the OpenAI client so they **do not** call the real API and **do not** require a valid `OPENAI_API_KEY`.
+
+```bash
+pip install -r requirements.txt
+pytest
+```
+
 ## API
 
 ### `POST /run-business-agent`
