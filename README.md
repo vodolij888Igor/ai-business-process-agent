@@ -129,6 +129,71 @@ The screenshot below shows a successful POST /run-business-agent request in Fast
 
 ![Swagger UI successful business process agent response](docs/images/swagger-business-agent-code-200.png)
 
+## API usage examples
+
+The examples below assume the API is running locally on port **8000** and that `OPENAI_API_KEY` is configured. Use them to exercise **`POST /run-business-agent`** from the terminal or from API clients such as Postman.
+
+**Scenario:** A small business or SaaS team receives a mix of **customer**, **sales**, **support**, and **operations** signals (email, chat, forms). The agent classifies the work, proposes a workflow, suggests relevant tool categories (as labels only), drafts a stakeholder-ready summary, and lists concrete **next steps**.
+
+### cURL
+
+Send a JSON body with `Content-Type: application/json`:
+
+```bash
+curl -s -X POST "http://127.0.0.1:8000/run-business-agent" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "business_task": "Review inbound messages from today and recommend how we should prioritize sales follow-ups, support tickets, and operational tasks.",
+    "business_context": "Small SaaS team: shared inbox, CRM leads, helpdesk queue, and internal ops requests; limited bandwidth so triage must be explicit.",
+    "data_items": [
+      "Sales: Prospect asked for pricing and a 30-minute demo next week.",
+      "Support: Existing customer cannot export reports after the latest release.",
+      "Operations: Finance needs subscription revenue reconciled by Friday.",
+      "Customer: User asked whether we integrate with Salesforce and Google Sheets."
+    ],
+    "preferred_tone": "professional"
+  }'
+```
+
+On Windows PowerShell you can use `curl.exe` with the same URL and headers, or paste the JSON into a file and pass `@payload.json` with `curl.exe` as appropriate for your shell.
+
+### Example successful JSON response
+
+A **200** response returns the structured plan. Shape is stable; wording may vary slightly depending on the model run.
+
+```json
+{
+  "task_summary": "Analyze customer requests and recommend next business actions.",
+  "detected_process_type": "customer_operations",
+  "priority": "high",
+  "recommended_workflow": [
+    "Classify each customer request.",
+    "Prioritize billing and demo-related requests.",
+    "Prepare follow-up responses.",
+    "Assign next actions to the appropriate team."
+  ],
+  "suggested_tools": [
+    "email_automation",
+    "customer_support_bot",
+    "crm_follow_up"
+  ],
+  "draft_response": "...",
+  "next_steps": [
+    "Contact Customer B about the billing issue.",
+    "Schedule a demo with Customer A.",
+    "Send integration details to Customer C."
+  ],
+  "reasoning": "The task includes multiple customer-facing requests that require classification, prioritization, and follow-up."
+}
+```
+
+### Postman
+
+1. Create a new request: **Method** `POST`, **URL** `http://127.0.0.1:8000/run-business-agent`.
+2. Under **Headers**, add **`Content-Type`** = **`application/json`** (Postman often sets this automatically when you choose JSON body).
+3. Under **Body**, select **raw**, choose **JSON**, and paste the same payload structure as in the cURL example (`business_task`, `business_context`, `data_items`, `preferred_tone`).
+4. **Send** the request. On success, verify **`task_summary`**, **`detected_process_type`**, **`priority`**, **`recommended_workflow`**, **`suggested_tools`**, **`draft_response`**, **`next_steps`**, and **`reasoning`** in the response panel.
+
 ## Current limitations
 
 - **OpenAI dependency:** Analysis requires a valid `OPENAI_API_KEY` and network access to OpenAI; quotas and outages surface as **502** responses.
