@@ -1,5 +1,7 @@
 # AI Business Process Agent (Portfolio API)
 
+[![Tests](https://github.com/vodolij888Igor/ai-business-process-agent/actions/workflows/tests.yml/badge.svg)](https://github.com/vodolij888Igor/ai-business-process-agent/actions/workflows/tests.yml)
+
 ## Project overview
 
 This repository contains a **Python FastAPI** backend for an **AI Business Process Agent**: a service that accepts a business objective, organizational context, and optional unstructured data, then returns a **structured, AI-ready business process plan** produced by **OpenAI** (structured JSON output). The stable response schema lets you plug in workflow engines or CRMs without changing clients.
